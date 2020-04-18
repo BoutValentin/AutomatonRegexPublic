@@ -9,16 +9,16 @@ int getLength(char *mot){
      return idx;
 }
 
-int pow2(int position){
-     int idx = 0;
-     int res = 1;
-     while(idx<position){
-          res *= 2;
-          
-          idx++;
-     }
-     return res;
-}
+//int pow2(int position){
+//     int idx = 0;
+//     int res = 1;
+//     while(idx<position){
+//          res *= 2;
+//          
+//          idx++;
+//     }
+//     return res;
+//}
 int contain(int value, int * array, int length){
      int idx = 0;
      while(idx<length){

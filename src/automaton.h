@@ -5,4 +5,5 @@ Automaton* constructor(char* path );
 void print_automaton(Automaton* automa);
 void freeAutomaton(Automaton *automaton);
 int getPosition(char letter, char array_letter[], int arrayLength);
+int pow2(int position);
 #endif

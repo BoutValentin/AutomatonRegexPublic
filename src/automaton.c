@@ -4,7 +4,7 @@
 #include "type.h"
 
 #define SIZEARRAY(x)  (sizeof(x) / sizeof((x)[0]))
-
+#define MAXALPAHE 32
 void printArray(int ar[], int l){
      int idx =0;
      while(idx<l){
@@ -12,7 +12,16 @@ void printArray(int ar[], int l){
           idx++;
      }
 }
-
+int pow2(int position){
+     int idx = 0;
+     int res = 1;
+     while(idx<position){
+          res *= 2;
+          
+          idx++;
+     }
+     return res;
+}
 
 int getPosition(char letter, char array_letter[], int arrayLength){
      int size = arrayLength;
@@ -22,7 +31,7 @@ int getPosition(char letter, char array_letter[], int arrayLength){
      if(idx==size) return -1;
      return idx;
 }
-void copyArray(int nb_lig, int nb_col, binary_vector **m1, binary_vector m2[nb_lig][nb_col] ){
+void copyArray(int nb_lig, int nb_col, binary_vector **m1, binary_vector **m2){
      int idx = 0;
      int idx2 = 0;
      while(idx<nb_lig){
@@ -50,7 +59,14 @@ void copyArrayChar(int col, char ar1[], char ar2[]){
      }
 }
 //Création du constructeur
-
+int verificationMatrix(char tab[], int size){
+     int cpt ;
+     int res =0 ;
+     for(cpt=0; cpt<size && tab[cpt]!='\n'; cpt++){
+          if(tab[cpt]==';') res++;
+     }
+     return ++res;
+}
 
 
 Automaton* constructor(char* path ){
@@ -64,10 +80,12 @@ Automaton* constructor(char* path ){
      char *data_alphabet;
      int prime_enter;
      int *data_final_state;
-     binary_vector matrix_set[5][5];
+     //binary_vector matrix_set[5][5];
+     binary_vector **matrix_set;
 
      int size;
      int size2;
+     int size3 = 0;
      int ligneRead = 0;
      int idx=0; 
                int idx2=0;
@@ -77,6 +95,10 @@ Automaton* constructor(char* path ){
           case 0:
                size = 0;
                while(tab[size]!='\n') size++;
+               if(size>MAXALPAHE){
+                    printf("Votre alphabet semble trop grand : %d au lieu de %d maximum \n", size, MAXALPAHE);
+                    return NULL;
+               }
                data_alphabet = (char *) malloc(sizeof(char)*size);
                memset(data_alphabet, 0, sizeof(char)*size);
                int index = 0;
@@ -104,7 +126,28 @@ Automaton* constructor(char* path ){
           case 5:
           case 6:
           case 7:
-          idx=idx2=0;
+          default:
+               idx=idx2=0;
+               //on determine la taille de notre matrix
+               if(ligneRead==3){
+                    while(tab[idx]!='\n'){
+                         if(tab[idx]==';') size3++;
+                         idx++;
+                    }
+                    size3++;
+                    
+                    //Il faut maintenant initialliser notre double array a la size voulu 
+                    matrix_set= (binary_vector **) malloc(size3*sizeof(binary_vector *));
+                    int cpt = 0;
+                    for(cpt=0;cpt<size3; cpt++) matrix_set[cpt] = (binary_vector *) malloc(size3*sizeof(binary_vector));
+               }else{
+                    if(size3!=verificationMatrix(tab, 50)){
+                         printf("Une erreur est survenue dans la Matrix : Il semble que tout les lignes ne soit pas egales \n");
+                         return NULL;
+                    }
+               }
+               idx=idx2=0;
+               
                while(tab[idx]!='\n'){
                     int res = 0;
                     while(tab[idx]!=';' && tab[idx]!='\n' && tab[idx]!=EOF){
@@ -113,7 +156,7 @@ Automaton* constructor(char* path ){
                               printf("Votre mot n'est pas lisible par l'automate \n");
                               return NULL;
                          }
-                         res += position+1;
+                         res += pow2(position);
                          ++idx;
                     }
                     if(tab[idx]!='\n') idx++;
@@ -124,14 +167,16 @@ Automaton* constructor(char* path ){
                     }
                }
                break;
-          default:
-               break;
           }
           ligneRead++;
      }
+     if((ligneRead-3)!=size3){
+          printf("Erreur: Vous n'avez pas fourni une matrice carre \nRegardez le README.md pour voir le fichier a passer en parametres et sa syntaxe \n");
+          return NULL;
+     }
 
      //Creation d'un automate 
-     Automaton * automaton = (Automaton*) malloc(sizeof(char)*size+sizeof(int)+sizeof(int)*size2+sizeof(binary_vector)*25);
+     Automaton * automaton = (Automaton*) malloc(sizeof(char)*size+sizeof(int)+sizeof(int)*size2+sizeof(binary_vector)*(size3*size3));
      //automaton->alphabet_array=data_alphabet;
      
      
@@ -145,16 +190,22 @@ Automaton* constructor(char* path ){
     
      automaton->size_final_state=size2;
 
-     automaton->matrix_size=5;
+     //ici on initialise la matrix 
+     //automaton->matrix_size=5;
+     automaton->matrix_size=size3;
      automaton->matrix = (binary_vector **) malloc(automaton->matrix_size*sizeof(binary_vector *));
      int cpt = 0;
      for(cpt=0;cpt<automaton->matrix_size; cpt++) automaton->matrix[cpt] = (binary_vector *) malloc(automaton->matrix_size*sizeof(binary_vector));
-     copyArray( 5, 5, automaton->matrix, matrix_set);
+     copyArray( size3, size3, automaton->matrix, matrix_set);
 
      //Liberation des mallocs de cette function
      free(data_alphabet);
      free(data_final_state);
-     
+     int cpt2=0;
+     for(cpt2=0;cpt2<size3; cpt2++) {free(matrix_set[cpt2]);}
+     free(matrix_set);
+
+     //fermeture du fichier
      fclose(myFile);
      
      return automaton;

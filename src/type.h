@@ -1,7 +1,7 @@
 #ifndef TYPE_H_INCLUDED
 #define TYPE_H_INCLUDED
 
-typedef unsigned char binary_vector;
+typedef unsigned int binary_vector;
 
 typedef struct
 {

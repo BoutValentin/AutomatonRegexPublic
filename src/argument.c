@@ -99,12 +99,13 @@ int defineArg(int argc, char **argv){
           posFile = getPositionOfParams("-f", argv, argc);
           argv[1] = argv[posFile];
           argv[2] = argv[posWord];
+          break;
      default:
           if(getPositionOfParams("-help", argv, argc)!=-1){
                helperPrint();
                return -1;
           }else{
-               printf("Nombre de parametre trop grand. \nVoir -help pour plus d'information \n");
+               printf("Nombre de parametre trop grand. \nVoir -help pour plus d'information %d\n", argc);
                return -1;
           }
           break;
