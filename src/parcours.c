@@ -35,7 +35,7 @@ int parcours(Automaton * automaton, char *mot){
      int length = getLength(mot);
      
      int idx_lecture = 0;
-     int actual_state = automaton->initial_state;
+     int actual_state = automaton->initial_state[0];
      
      while( idx_lecture<length){
           int position_actual_letter = getPosition(mot[idx_lecture], automaton->alphabet_array, automaton->size_alphabet);

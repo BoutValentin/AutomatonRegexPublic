@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "type.h"
-
+//#include "determinisation.h"
 #define SIZEARRAY(x)  (sizeof(x) / sizeof((x)[0]))
 #define MAXALPAHE 32
 void printArray(int ar[], int l){
@@ -37,7 +37,8 @@ void copyArray(int nb_lig, int nb_col, binary_vector **m1, binary_vector **m2){
      while(idx<nb_lig){
           idx2=0;
           while(idx2<nb_col){
-               m1[idx][idx2]=m2[idx][idx2];
+               binary_vector prov = m2[idx][idx2];
+               m1[idx][idx2]=prov;
                idx2++;
           }
           idx++;
@@ -46,7 +47,8 @@ void copyArray(int nb_lig, int nb_col, binary_vector **m1, binary_vector **m2){
 void copyArrayInt(int col, int ar1[], int ar2[]){
      int idx=0;
      while(idx<col){
-          ar1[idx]=ar2[idx];
+          int prov = ar2[idx];
+          ar1[idx]=prov;
           idx++;
      }
 }
@@ -54,7 +56,8 @@ void copyArrayInt(int col, int ar1[], int ar2[]){
 void copyArrayChar(int col, char ar1[], char ar2[]){
      int idx=0;
      while(idx<col){
-          ar1[idx]=ar2[idx];
+          char prov = ar2[idx];
+          ar1[idx]=prov;
           idx++;
      }
 }
@@ -70,7 +73,8 @@ int verificationMatrix(char tab[], int size){
 
 
 Automaton* constructor(char* path ){
-     char tab[50];
+    
+     char tab[1000];
      FILE *myFile = fopen(path, "r");
      if(myFile==NULL){
           printf("Error while opening the file. \n");
@@ -78,7 +82,7 @@ Automaton* constructor(char* path ){
      }
      //initialisation des variables a affecter
      char *data_alphabet;
-     int prime_enter;
+     int *prime_enter;
      int *data_final_state;
      //binary_vector matrix_set[5][5];
      binary_vector **matrix_set;
@@ -86,10 +90,11 @@ Automaton* constructor(char* path ){
      int size;
      int size2;
      int size3 = 0;
+     int size4 =0;
      int ligneRead = 0;
      int idx=0; 
                int idx2=0;
-     while( fgets(tab, 50, myFile)!=NULL){
+     while( fgets(tab, 1000, myFile)!=NULL){
           switch (ligneRead)
           {
           case 0:
@@ -108,7 +113,15 @@ Automaton* constructor(char* path ){
                }
                break;
           case 1:
-               prime_enter=tab[0]-48;
+               while(tab[size4]!='\n') size4++;
+               prime_enter = (int *) malloc(sizeof(int)*size4);
+               memset(prime_enter, 0, sizeof(int)*size4);
+               index = 0;
+               while(index<size4){
+                    prime_enter[index]=tab[index]-48;
+                    index++;
+               }
+               //prime_enter=tab[0]-48;
                break;
           case 2: 
                size2 = 0;
@@ -127,6 +140,7 @@ Automaton* constructor(char* path ){
           case 6:
           case 7:
           default:
+        
                idx=idx2=0;
                //on determine la taille de notre matrix
                if(ligneRead==3){
@@ -141,13 +155,14 @@ Automaton* constructor(char* path ){
                     int cpt = 0;
                     for(cpt=0;cpt<size3; cpt++) matrix_set[cpt] = (binary_vector *) malloc(size3*sizeof(binary_vector));
                }else{
-                    if(size3!=verificationMatrix(tab, 50)){
+                    if(size3!=verificationMatrix(tab, 1000)){
                          printf("Une erreur est survenue dans la Matrix : Il semble que tout les lignes ne soit pas egales \n");
                          return NULL;
                     }
                }
                idx=idx2=0;
-               
+                         
+
                while(tab[idx]!='\n'){
                     int res = 0;
                     while(tab[idx]!=';' && tab[idx]!='\n' && tab[idx]!=EOF){
@@ -167,6 +182,8 @@ Automaton* constructor(char* path ){
                     }
                }
                break;
+                         
+
           }
           ligneRead++;
      }
@@ -174,16 +191,18 @@ Automaton* constructor(char* path ){
           printf("Erreur: Vous n'avez pas fourni une matrice carre \nRegardez le README.md pour voir le fichier a passer en parametres et sa syntaxe \n");
           return NULL;
      }
-
      //Creation d'un automate 
-     Automaton * automaton = (Automaton*) malloc(sizeof(char)*size+sizeof(int)+sizeof(int)*size2+sizeof(binary_vector)*(size3*size3));
+     //Automaton * automaton = (Automaton*) malloc(sizeof(char)*size+size4*sizeof(int)+sizeof(int)*size2+sizeof(binary_vector)*(size3*size3));
      //automaton->alphabet_array=data_alphabet;
-     
+     Automaton * automaton = (Automaton*) malloc(sizeof(Automaton));
      
      automaton->size_alphabet=size;
      automaton->alphabet_array= (char *) malloc(sizeof(char)*size);
      copyArrayChar(size, automaton->alphabet_array, data_alphabet);
-     automaton->initial_state=prime_enter;
+     
+     automaton->initial_state = (int *) malloc(sizeof(int)*size4);
+     automaton->size_of_initial_state = size4;
+     copyArrayInt(size4, automaton->initial_state, prime_enter);
      //automaton->final_state_array=data_final_state;
      automaton->final_state_array= (int*) malloc(sizeof(int)*size2);
      copyArrayInt(size2, automaton->final_state_array, data_final_state);
@@ -198,6 +217,7 @@ Automaton* constructor(char* path ){
      for(cpt=0;cpt<automaton->matrix_size; cpt++) automaton->matrix[cpt] = (binary_vector *) malloc(automaton->matrix_size*sizeof(binary_vector));
      copyArray( size3, size3, automaton->matrix, matrix_set);
 
+     
      //Liberation des mallocs de cette function
      free(data_alphabet);
      free(data_final_state);
@@ -236,8 +256,14 @@ void print_automaton(Automaton* automa){
           index++;
      }
      index = 0;
-     printf("}\nInitial state : %d \n", automa->initial_state);
-     printf("The acceptation state : {");
+     printf("}\nInitial state : ");
+
+     while(index<automa->size_of_initial_state){
+          printf("%d", automa->initial_state[index]);
+          index++;
+     }
+     printf("\nThe acceptation state : {");
+     index = 0;
      while(index<automa->size_final_state){
           printf("%d", automa->final_state_array[index]);
           if(index<automa->size_final_state-1)printf(",");
@@ -251,7 +277,7 @@ void print_automaton(Automaton* automa){
           while(column<automa->matrix_size){
                if(automa->matrix[row][column]!=0) automa->matrix[row][column]<15? printf("0x0%x", automa->matrix[row][column]) : printf("0x%x", automa->matrix[row][column]);
                
-               if(column<4) printf(";");
+               if(column<automa->matrix_size-1) printf(";");
                column++;
           }
           printf("\n");
