@@ -75,7 +75,7 @@ La ligne de commande s'éxécute de diffèrente maniere:
     $ ./bin/automate -w <mot_a_tester> -f <lien_du_fichier>
     ```
     > Ces deux options sont indépendantes l'une de l'autre et peuvent être utiliser sans ordre précis. Dans le cas ou l'une est préciser le troisième paramètres sans options sera pris pour l'autre par defaut. Ainsi si seul -f est passer alors le parametres avant -f ou apres le nom du fichier sera pris comme le mot a tester.
-    > **Exemple:** 
+    > **Exemple:** <br/>
     >```$ ./bin/automate -f ./TestFile/automate1 baba ```<br/>
     >```$ ./bin/automate baba -f ./TestFile/automate1 ```<br/>
     >```$ ./bin/automate -w baba ./TestFile/automate1 ```<br/>
@@ -88,16 +88,16 @@ La ligne de commande s'éxécute de diffèrente maniere:
     ```sh
     $ ./bin/automate <mot_a_tester> <lien_du_fichier> -overwrite
     ```
-    >Cette option est indépendante des autres et peut etre utiliser avec -w et -f de la meme maniere que précèdement en ajoutant -overwrite n'importe ou dans la ligne de commande
-    >**Exemple:**
-    >```$ ./bin/automate -f ./TestFile/automate1 -overwrite baba ``` Ici baba sera pris comme mot a utiliser
-    >```$ ./bin/automate -overwrite -w baba ./TestFile/automate1 ``` Ici automate1 sera pris comme le fichier par defaut
-    >##### Attention
+    >Cette option est indépendante des autres et peut etre utiliser avec -w et -f de la meme maniere que précèdement en ajoutant -overwrite n'importe ou dans la ligne de commande<br/>
+    >**Exemple:**<br/>
+    >```$ ./bin/automate -f ./TestFile/automate1 -overwrite baba ``` Ici baba sera pris comme mot a utiliser<br/>
+    >```$ ./bin/automate -overwrite -w baba ./TestFile/automate1 ``` Ici automate1 sera pris comme le fichier par defaut<br/>
+    ##### Attention
     En utilisant seulement quatres paramètres: l'exécutable, le fichier, le mot, et -overwrite, le premiere parametre n'étant pas overwrite sera pris comme le fichier et le deuxieme comme le mot 
-    **Exemple:**
-    ```./bin/automate1 ./TestFile/automate1 -overwrite baba ``` 
-    ```./bin/automate1 -overwrite ./TestFile/automa1 baba ```
-    ```./bin/automate1 ./TestFile/automate1 baba -overwrite```
+    **Exemple:**<br/>
+    ```./bin/automate1 ./TestFile/automate1 -overwrite baba ``` <br/>
+    ```./bin/automate1 -overwrite ./TestFile/automa1 baba ```<br/>
+    ```./bin/automate1 ./TestFile/automate1 baba -overwrite```<br/>
     Ici *./TestFile/automate1* sera pris comme le fichier et *baba* comme le mot dans les trois exemples
  - Pour obtenir de l'aide sur l'utilisation de la ligne de commande :
     ```sh
