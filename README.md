@@ -83,6 +83,22 @@ La ligne de commande s'éxécute de diffèrente maniere:
     >```$ ./bin/automate -w baba -f ./TestFile/automate1 ```
     >```$ ./bin/automate -f ./TestFile/automate1 -w baba```
     
+ - Pour réecrire votre fichier avec -overwrite:
+    L'option **-overwrite** permet dans le cas ou vous passez un fichier d'un automate non déterministe de réécrire votre fichier avec l'automate déterministe créer par le programme.
+    ```sh
+    $ ./bin/automate <mot_a_tester> <lien_du_fichier> -overwrite
+    ```
+    >Cette option est indépendante des autres et peut etre utiliser avec -w et -f de la meme maniere que précèdement en ajoutant -overwrite n'importe ou dans la ligne de commande
+    >**Exemple:**
+    >```$ ./bin/automate -f ./TestFile/automate1 -overwrite baba ``` Ici baba sera pris comme mot a utiliser
+    >```$ ./bin/automate -overwrite -w baba ./TestFile/automate1 ``` Ici automate1 sera pris comme le fichier par defaut
+    >##### Attention
+    En utilisant seulement quatres paramètres: l'exécutable, le fichier, le mot, et -overwrite, le premiere parametre n'étant pas overwrite sera pris comme le fichier et le deuxieme comme le mot 
+    **Exemple:**
+    ```./bin/automate1 ./TestFile/automate1 -overwrite baba ``` 
+    ```./bin/automate1 -overwrite ./TestFile/automa1 baba ```
+    ```./bin/automate1 ./TestFile/automate1 baba -overwrite```
+    Ici *./TestFile/automate1* sera pris comme le fichier et *baba* comme le mot dans les trois exemples
  - Pour obtenir de l'aide sur l'utilisation de la ligne de commande :
     ```sh
     $ ./bin/automate -help
@@ -93,7 +109,7 @@ La ligne de commande s'éxécute de diffèrente maniere:
 
 ### Traitement des automates non déterministes:
 
-Dans le cas ou vous passez un fichier décrivant un automate non déterministe (voir condition dans la section *Rappel: Automate et languages*), le programme transformera votre algorithme en automate détermniste afin de faciliter le traitement. Notez que seul l'automate du programme est modifier et non le fichier passer en paramètre.
+Dans le cas ou vous passez un fichier décrivant un automate non déterministe (voir condition dans la section *Rappel: Automate et languages*), le programme transformera votre algorithme en automate détermniste afin de faciliter le traitement. Notez que par défaut, seul l'automate du programme est modifier et non le fichier passer en paramètre. Pour modifier aussi voter fichier passer a l'éxecutable l'option **-overwrite**.
 
 ### Taille de l'alphabet:
 L'alphabet dans le fichier passer en paramètre doit avoir une taille maximale de 32 charactères. Dans le cas contraire le programme vous demendera de modifier votre alphabet dans votre fichier.

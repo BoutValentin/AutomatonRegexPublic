@@ -5,6 +5,7 @@
 #include "parcours.h"
 #include "argument.h"
 #include "determinisation.h"
+#include "overide.h"
 
 int main(int argc, char **argv){
 
@@ -12,13 +13,18 @@ int main(int argc, char **argv){
      //affichage automaton
      //traitement mor + automaton
      //final accept or not 
-     if(defineArg(argc, argv)==-1) return -1;
+     int * shouldOveride;
+     *shouldOveride = 0;
+     if(defineArg(argc, argv, shouldOveride)==-1) return -1;
      Automaton * automate = constructor(argv[1]);
      if (automate==NULL) return 1;
      print_automaton(automate);
      if(shouldDeterminizate(automate)==1){
           
          algorithmDeterminization(automate);
+         if(*shouldOveride==1){
+             int succes = overideFile(argv[1], automate);
+         }
      }
      //freeAutomaton(automate);
      int code = parcours(automate, argv[2]);
