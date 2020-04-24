@@ -92,8 +92,8 @@ La ligne de commande s'éxécute de diffèrente maniere:
     >**Exemple:**<br/>
     >```$ ./bin/automate -f ./TestFile/automate1 -overwrite baba ``` Ici baba sera pris comme mot a utiliser<br/>
     >```$ ./bin/automate -overwrite -w baba ./TestFile/automate1 ``` Ici automate1 sera pris comme le fichier par defaut<br/>
-    ##### Attention
-    En utilisant seulement quatres paramètres: l'exécutable, le fichier, le mot, et -overwrite, le premiere parametre n'étant pas overwrite sera pris comme le fichier et le deuxieme comme le mot 
+    #### Attention
+    En utilisant seulement quatres paramètres: l'exécutable, le fichier, le mot, et -overwrite, le premiere parametre n'étant pas overwrite sera pris comme le fichier et le deuxieme comme le mot <br/>
     **Exemple:**<br/>
     ```./bin/automate1 ./TestFile/automate1 -overwrite baba ``` <br/>
     ```./bin/automate1 -overwrite ./TestFile/automa1 baba ```<br/>
