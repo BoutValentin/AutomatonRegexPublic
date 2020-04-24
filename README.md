@@ -76,14 +76,14 @@ La ligne de commande s'éxécute de diffèrente maniere:
     ```
     > Ces deux options sont indépendantes l'une de l'autre et peuvent être utiliser sans ordre précis. Dans le cas ou l'une est préciser le troisième paramètres sans options sera pris pour l'autre par defaut. Ainsi si seul -f est passer alors le parametres avant -f ou apres le nom du fichier sera pris comme le mot a tester.
     > **Exemple:** 
-    >```$ ./bin/automate -f ./TestFile/automate1 baba ```
-    >```$ ./bin/automate baba -f ./TestFile/automate1 ```
-    >```$ ./bin/automate -w baba ./TestFile/automate1 ```
-    >```$ ./bin/automate ./TestFile/automate1 -w baba```
-    >```$ ./bin/automate -w baba -f ./TestFile/automate1 ```
-    >```$ ./bin/automate -f ./TestFile/automate1 -w baba```
+    >```$ ./bin/automate -f ./TestFile/automate1 baba ```<br/>
+    >```$ ./bin/automate baba -f ./TestFile/automate1 ```<br/>
+    >```$ ./bin/automate -w baba ./TestFile/automate1 ```<br/>
+    >```$ ./bin/automate ./TestFile/automate1 -w baba```<br/>
+    >```$ ./bin/automate -w baba -f ./TestFile/automate1 ```<br/>
+    >```$ ./bin/automate -f ./TestFile/automate1 -w baba```<br/>
     
- - Pour réecrire votre fichier avec -overwrite:
+ - Pour réecrire votre fichier avec -overwrite:<br/>
     L'option **-overwrite** permet dans le cas ou vous passez un fichier d'un automate non déterministe de réécrire votre fichier avec l'automate déterministe créer par le programme.
     ```sh
     $ ./bin/automate <mot_a_tester> <lien_du_fichier> -overwrite
