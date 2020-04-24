@@ -166,7 +166,7 @@ void renameState(State **initialArray, int sizeRow, int sizeCol){
           }
           free(initialArray[i][0]->array_state);
           free(initialArray[i][0]);
-          State aState =(State) malloc(sizeof(int)+sizeof(int *));
+          State aState =(State) malloc(sizeof(StrucState)); //change
           string_state array = (int *) malloc(sizeof(int));
           array[0]=i;
           int size = 1;
@@ -236,7 +236,7 @@ State ** createInitialArray(Automaton * automate){
                                    string_state array2= (int *) malloc(sizeof(int));
                                    array2[0] = j;
                                    int size = 1;
-                                   State  aState = (State ) malloc(sizeof(int)+size*(sizeof(int *))); //change her
+                                   State  aState = (State ) malloc(sizeof(StrucState)); //change her
                                    aState->array_state=array2;
                                    aState->size_array_state=size;
                                    InitialArray[i][k+1]= aState;
@@ -287,7 +287,9 @@ State ** createFinalArray(Automaton * automate){
      //Premiere colonne
      for(i=0; i<1; i++){
           string_state array= copyArrayInteger(automate->initial_state,automate->size_of_initial_state);
-          State aState = (State ) malloc(sizeof(int)+automate->size_of_initial_state*(sizeof(int *))); //change here
+          //State aState = (State ) malloc(sizeof(int)+automate->size_of_initial_state*(sizeof(int *))); //change here
+          State aState = (State ) malloc(sizeof(StrucState)); //change here
+
           aState->array_state=array;
           aState->size_array_state=automate->size_of_initial_state;
           FinalArray[i][0]= aState;
@@ -297,7 +299,8 @@ State ** createFinalArray(Automaton * automate){
 
 void algorithmDeterminization(Automaton * automate){
      //Cette variable ne doit pas evoluer il s'agit de la taille initiale du tableau
-     int sizeOfInitialArray;
+     int sizeOfInitialArrayCol=automate->size_alphabet+1;
+     int sizeOfInitialArrayRow=automate->matrix_size;
      State **InitialArray = createInitialArray(automate);
 
      int sizeOfFinalArray =1;
@@ -395,8 +398,23 @@ void algorithmDeterminization(Automaton * automate){
      }
      copyArray(automate->matrix_size, automate->matrix_size, automate->matrix, changeMatrix(automate, FinalArray, sizeOfFinalArray));
 
+     //on liberre de la memoire
+     free(finalStateSize);
+     free(changingFinalState);
+
+     for(uncpt=0; uncpt<sizeOfInitialArrayRow; uncpt++){
+          int uncpt2 ;
+          for(uncpt2=0; uncpt2<sizeOfInitialArrayCol; uncpt2++){
+               //free(InitialArray[uncpt][uncpt2]->array_state);
+          }
+          free(InitialArray[uncpt]);
+     }
+     free(InitialArray);
+
      printf("\n\n          Votre automate a ete determiniser:              \n\n");
      print_automaton(automate);
+
+     
 }
 
 

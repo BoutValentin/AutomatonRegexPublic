@@ -65,7 +65,7 @@ void copyArrayChar(int col, char ar1[], char ar2[]){
 int verificationMatrix(char tab[], int size){
      int cpt ;
      int res =0 ;
-     for(cpt=0; cpt<size && tab[cpt]!='\n'; cpt++){
+     for(cpt=0; cpt<size && tab[cpt]!='\n' && tab[cpt]!='\0'; cpt++){
           if(tab[cpt]==';') res++;
      }
      return ++res;
@@ -163,9 +163,11 @@ Automaton* constructor(char* path ){
                idx=idx2=0;
                          
 
-               while(tab[idx]!='\n'){
+               while(tab[idx]!='\n' && tab[idx]!='\0'){ 
                     int res = 0;
-                    while(tab[idx]!=';' && tab[idx]!='\n' && tab[idx]!=EOF){
+                    while(tab[idx]!=';' && tab[idx]!='\n' && tab[idx]!='\0'){
+                                             printf("ligne read: %d, tab[%d]=%c \n", ligneRead,idx, tab[idx]);
+
                          int position = getPosition(tab[idx], data_alphabet, size);
                          if(position==-1){
                               printf("Votre mot n'est pas lisible par l'automate \n");
@@ -177,7 +179,7 @@ Automaton* constructor(char* path ){
                     if(tab[idx]!='\n') idx++;
                     matrix_set[ligneRead-3][idx2]=res;
                     idx2++;
-                    if(tab[idx]=='\n' && tab[idx-1]==';'){
+                    if((tab[idx]=='\n' && tab[idx-1]==';')){
                          matrix_set[ligneRead-3][idx2]=0;
                     }
                }
@@ -189,7 +191,7 @@ Automaton* constructor(char* path ){
      }
      if((ligneRead-3)!=size3){
           printf("Erreur: Vous n'avez pas fourni une matrice carre \nRegardez le README.md pour voir le fichier a passer en parametres et sa syntaxe \n");
-          return NULL;
+          return NULL;   
      }
      //Creation d'un automate 
      //Automaton * automaton = (Automaton*) malloc(sizeof(char)*size+size4*sizeof(int)+sizeof(int)*size2+sizeof(binary_vector)*(size3*size3));
@@ -221,6 +223,7 @@ Automaton* constructor(char* path ){
      //Liberation des mallocs de cette function
      free(data_alphabet);
      free(data_final_state);
+     free(prime_enter);
      int cpt2=0;
      for(cpt2=0;cpt2<size3; cpt2++) {free(matrix_set[cpt2]);}
      free(matrix_set);
@@ -238,6 +241,7 @@ Automaton* constructor(char* path ){
 void freeAutomaton(Automaton* automaton){
      free(automaton->alphabet_array);
      free(automaton->final_state_array);
+     free(automaton->initial_state);
      int cpt=0;
      for(cpt=0;cpt<automaton->matrix_size; cpt++) {free(automaton->matrix[cpt]);}
      free(automaton->matrix);

@@ -22,5 +22,6 @@ int main(int argc, char **argv){
      }
      //freeAutomaton(automate);
      int code = parcours(automate, argv[2]);
+     freeAutomaton(automate);
      return 0;
 }
