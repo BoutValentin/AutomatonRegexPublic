@@ -8,8 +8,8 @@ SRCDIR = ./src/
 OBJDIR = ./obj/
 BINDIR = ./bin/
 
-$(BINDIR)$(PJNAME): $(OBJDIR)argument.o $(OBJDIR)automaton.o $(OBJDIR)parcours.o $(OBJDIR)determinisation.o $(OBJDIR)main.o
-	gcc -o automate $(OBJDIR)argument.o $(OBJDIR)automaton.o $(OBJDIR)parcours.o $(OBJDIR)main.o $(OBJDIR)determinisation.o
+$(BINDIR)$(PJNAME): $(OBJDIR)main.o 
+	gcc -o $(BINDIR)automate $(OBJDIR)argument.o $(OBJDIR)automaton.o $(OBJDIR)parcours.o $(OBJDIR)determinisation.o $(OBJDIR)overide.o $(OBJDIR)main.o 
 
 $(OBJDIR)automaton.o: $(SRCDIR)automaton.c $(SRCDIR)automaton.h $(SRCDIR)type.h
 	gcc -c -o $(OBJDIR)automaton.o $(SRCDIR)automaton.c
@@ -20,10 +20,13 @@ $(OBJDIR)parcours.o: $(SRCDIR)parcours.c $(SRCDIR)parcours.h $(OBJDIR)automaton.
 $(OBJDIR)argument.o: $(SRCDIR)argument.c $(SRCDIR)argument.h $(OBJDIR)parcours.o
 	gcc -c -o $(OBJDIR)argument.o $(SRCDIR)argument.c
 
-$(OBJDIR)determinisation.o: $(SRCDIR)automaton.c $(SRCDIR)automaton.h $(SRCDIR)determinisation.h
+$(OBJDIR)determinisation.o: $(SRCDIR)automaton.c $(SRCDIR)automaton.h $(SRCDIR)determinisation.h $(SRCDIR)determinisation.c
 	gcc -c -o $(OBJDIR)determinisation.o $(SRCDIR)determinisation.c
 
-$(OBJDIR)main.o: $(OBJDIR)argument.o $(OBJDIR)automaton.o $(OBJDIR)parcours.o $(OBJDIR)determinisation.o
+$(OBJDIR)overide.o: $(SRCDIR)overide.c $(SRCDIR)overide.h $(SRCDIR)automaton.h $(SRCDIR)type.h
+	gcc -c -o $(OBJDIR)overide.o $(SRCDIR)overide.c
+
+$(OBJDIR)main.o: $(OBJDIR)argument.o $(OBJDIR)automaton.o $(OBJDIR)parcours.o $(OBJDIR)determinisation.o $(OBJDIR)overide.o $(SRCDIR)main.c
 	gcc -c -o $(OBJDIR)main.o $(SRCDIR)main.c
 
 clean:

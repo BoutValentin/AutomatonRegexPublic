@@ -4,6 +4,7 @@
 #include "type.h"
 #include "automaton.h"
 
+//FUNCTION: Creer le tableau de caractères qui sera ecrit dans le fichier
 char * createArray(Automaton * automate){
      char * tableau =(char *) malloc((automate->size_alphabet+1+automate->size_final_state+1+automate->size_of_initial_state+1)*sizeof(char));
      int size = (automate->size_alphabet+1+automate->size_final_state+1+automate->size_of_initial_state+1);
@@ -19,7 +20,7 @@ char * createArray(Automaton * automate){
           compteur++;
      }
      tableau[compteur++] = '\n';
-     for(cpt=0; cpt<automate->size_of_initial_state; cpt++){
+     for(cpt=0; cpt<automate->size_final_state; cpt++){
           tableau[compteur] = automate->final_state_array[cpt]+'0';
           compteur++;
      }
@@ -29,7 +30,7 @@ char * createArray(Automaton * automate){
                if(automate->matrix[cpt][cpt2]!=0){
                     for(cpt3=0;cpt3<automate->size_alphabet;cpt3++){
                          int filter = pow2(cpt3);
-                         if(automate->matrix[cpt][cpt2]&filter==filter){
+                         if((automate->matrix[cpt][cpt2]&filter)==filter){
                               tableau = realloc(tableau, (size+1)*sizeof(char));
                               size++;
                               tableau[compteur++] = automate->alphabet_array[cpt3];
@@ -51,10 +52,9 @@ char * createArray(Automaton * automate){
      }
      return tableau;
 }
-
+//FONCTION: réalise la réécriture du fichier passer en parametre 
 int overideFile(char* path, Automaton * automate){
      char * tableau = createArray(automate);
-     
      FILE *fp = fopen(path, "w+");
      if(fp==NULL){
           printf("Erreur dans l'ouverture de fichier ! l'overwrite ne se fera pas \n");
@@ -62,7 +62,7 @@ int overideFile(char* path, Automaton * automate){
      }
      fputs(tableau, fp);
      fclose(fp);
-     printf("L'ovewrite a etait effectuer \n");
+     printf("L'overwrite a etait effectuer \n");
      free(tableau);
      return 0;
 }

@@ -8,26 +8,30 @@
 #include "overide.h"
 
 int main(int argc, char **argv){
-
-     //Creation de l'automaton
-     //affichage automaton
-     //traitement mor + automaton
-     //final accept or not 
-     int * shouldOveride;
-     *shouldOveride = 0;
-     if(defineArg(argc, argv, shouldOveride)==-1) return -1;
-     Automaton * automate = constructor(argv[1]);
-     if (automate==NULL) return 1;
-     print_automaton(automate);
-     if(shouldDeterminizate(automate)==1){
-          
-         algorithmDeterminization(automate);
-         if(*shouldOveride==1){
-             int succes = overideFile(argv[1], automate);
-         }
-     }
-     //freeAutomaton(automate);
-     int code = parcours(automate, argv[2]);
-     freeAutomaton(automate);
-     return 0;
+    int shouldOveride = 0;
+    int *ptShouldOveride = &shouldOveride; 
+    //On commence par verifier les arguments
+    if(defineArg(argc, argv, ptShouldOveride)==-1) return -1;
+    //On creer notre automate
+    Automaton * automate = constructor(argv[1]);
+    //Si l'automate une erreur a eu lieu le programme s'arrete
+    if (automate==NULL) return 1;
+    //On affiche l'automate creer
+    print_automaton(automate);
+    //On determine si l'automate doit etre déterminiser
+    int shDeter = shouldDeterminizate(automate);
+    //Si il doit etre determiniser
+    if(shDeter==1){  
+        //On le determinise
+        algorithmDeterminization(automate);
+        //Si -ovewrite a était passer en parametre alors on réécris le fichier
+        if(shouldOveride==1){
+            int success = overideFile(argv[1], automate);         
+        }
+    }
+    //On réalise alors le parcours de l'automate avec le mot passer en parametre
+    parcours(automate, argv[2]);
+    //On libere l'automate et les malloc effectuer
+    //freeAutomaton(automate);
+    return 0;
 }

@@ -20,7 +20,7 @@ typedef struct
 }Automaton;
 
 //Creation des types pour la determinisation
-typedef unsigned int * string_state;
+typedef signed int * string_state;
 
 typedef struct 
 {

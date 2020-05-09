@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include "type.h"
-
 #include "parcours.h"
 
+//FONCTION: Test si deux tableau de char sont identiques
 int wordInArrays(char find[], char *array){
      int lengthFind = getLength(find);
      int lengthArray = getLength(array);
@@ -13,6 +13,7 @@ int wordInArrays(char find[], char *array){
      }
      return 0;
 }
+//FONCTION: Retourne la position du paramètre parmis la ligne d'argument
 int getPositionOfParams(char find[], char **arg, int nbrAargument){
      int idx;
      for(idx =1; idx<nbrAargument; idx++){
@@ -20,13 +21,14 @@ int getPositionOfParams(char find[], char **arg, int nbrAargument){
      }
      return -1;
 }
-
+//FONCTION: Raccourci afin d'afficher l'aide générale
 void helperPrint(){
      printf("Utilisation de la ligne de commande : \n");
      printf("1) ./automate <chemin_du_fichier> <mot_a_trouver> \n");
-     printf("2) Vous pouvez aussi utiliser deux arguments : \n");
+     printf("2) Vous pouvez aussi utiliser trois arguments : \n");
      printf("    -w <mot_a_trouver> : specifie le mot a trouver dans l'automate. \n");
      printf("    -f <chemin_du_fichier> : specifie le chemin du fichier. \n");
+     printf("    -overwrite : permet dans le cas d'un automate non détérministe de réécrire le fichier passer en paramètres \n");
      printf("Notez que si vous utilisez un seul des deux arguments, l'autre parametre sera alors utiliser comme par defaut \n");
      printf("Exemple d'utilisation : \n");
      printf("./automate ../mon_chemin monmot \n");
@@ -34,11 +36,11 @@ void helperPrint(){
      printf("./automate ../mon_chemin -w monmot  \n");
      printf("./automate -f ../mon_chemin monmot  \n");
      printf("./automate monmot -f ../mon_chemin \n");
-     printf("./automate -f ../mon_chemin -w monmot  \n");
-     printf("./automate -w monmot -f ../mon_chemin \n");
+     printf("./automate -overwrite -f ../mon_chemin -w monmot  \n");
+     printf("./automate -w monmot -f ../mon_chemin -overwrite \n");
 }
 
-
+//FONCTION: Effectue les tests afin de replacer les arguments et déterminer ceux passer en paramètres ou les mauvaises utilisations
 int defineArg(int argc, char **argv, int * shouldOveride){
      int posWord ;
      int posFile;
@@ -169,25 +171,22 @@ int defineArg(int argc, char **argv, int * shouldOveride){
                     } 
                }
           }else
-          if(getPositionOfParams("-f", argv, argc)==-1 || getPositionOfParams("-w", argv, argc)==-1){
-               printf("Un parametre inconu a ete passer en parametre\n.Voir -help pour plus d'informations \n");
-               return -1;
-          }else
-          {
-               
-          
-          
-          posWord = getPositionOfParams("-w", argv, argc);
-          posFile = getPositionOfParams("-f", argv, argc);
-          argv[1] = argv[posFile];
-          argv[2] = argv[posWord];
-          }break;
+               if(getPositionOfParams("-f", argv, argc)==-1 || getPositionOfParams("-w", argv, argc)==-1){
+                    printf("Un parametre inconu a ete passer en parametre\n.Voir -help pour plus d'informations \n");
+                    return -1;
+               }else{
+                    posWord = getPositionOfParams("-w", argv, argc);
+                    posFile = getPositionOfParams("-f", argv, argc);
+                    argv[1] = argv[posFile];
+                    argv[2] = argv[posWord];
+               }
+          break;
      case 6:
           if(getPositionOfParams("-help", argv, argc)!=-1){
                helperPrint();
                return -1;
           }
-          if(getPositionOfParams("-overwrite", argv, argc)==-1 || getPositionOfParams("-f", argv, argc)==-1 || getPositionOfParams("-w", argv, argc)==-1 ){
+          if(getPositionOfParams("-overwrite", argv, argc)==-1 || getPositionOfParams("-f", argv, argc)==-1 ||                 getPositionOfParams("-w", argv, argc)==-1 ){
                printf("Un parametre inconu a ete passer en parametre\n.Voir -help pour plus d'informations \n");
                return -1;
           }
@@ -197,7 +196,6 @@ int defineArg(int argc, char **argv, int * shouldOveride){
           argv[1] = argv[posFile];
           argv[2] = argv[posWord];
           break;
-
      default:
           if(getPositionOfParams("-help", argv, argc)!=-1){
                helperPrint();
@@ -208,6 +206,5 @@ int defineArg(int argc, char **argv, int * shouldOveride){
           }
           break;
      }
-
      return 0;
 }

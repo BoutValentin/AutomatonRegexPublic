@@ -121,4 +121,4 @@ L'automate a une taille maximale definie en fonction d'une constante de lecture 
     
 ## A propos :
 Projet réaliser dans le cadre de la matiere initiation au language C par **BOUT Valentin**.
-Le code sera rendu public sur GitHub le 15 mai 2020 à l'adresse : ```https://github.com/BoutValentin```
+Le code sera rendu public sur GitHub le 15 mai 2020 à l'adresse : ```https://github.com/BoutValentin/AutomatonRegex```

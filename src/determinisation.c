@@ -4,8 +4,7 @@
 #include "type.h"
 #include "automaton.h"
 
-//int alreadyHaveValue(string_state array, int value, int sizeArray){
-
+//FONCTION: test si un array de string_state contient deja la valeur passer en paramètre
 int alreadyHaveValue(string_state array, int value, int sizeArray){
      if(array==NULL) return 0;
      int i=0;
@@ -15,18 +14,16 @@ int alreadyHaveValue(string_state array, int value, int sizeArray){
      return 0;
 }
 
-
-//Run before the rename
+//FONCTION: definit les etats finaux de l'automate apres determinisation
 int * changeFinalState(Automaton * automate, State ** FinaleArray, int numberOfState, int * pointSize){
      int * FinalStateArray=(int*) malloc(sizeof(int));
-     //Pour chaque ligne de la premiere colonne
-     //Cherche si cette case contain value de 
+     FinalStateArray[0]=-2; 
      int finaleStateArrayContain = 0;
      int finaleStateArraySize =1;
      int cpt, cpt2;
      for(cpt=0; cpt<numberOfState; cpt++){
           for(cpt2=0; cpt2<automate->size_final_state; cpt2++){
-               if(alreadyHaveValue(FinaleArray[cpt][0]->array_state, automate->final_state_array[cpt2], FinaleArray[cpt][0]->size_array_state)==1 && alreadyHaveValue(FinalStateArray, automate->final_state_array[cpt2], finaleStateArraySize)==0 ){
+               if(alreadyHaveValue(FinaleArray[cpt][0]->array_state, automate->final_state_array[cpt2], FinaleArray[cpt][0]->size_array_state)==1 && alreadyHaveValue(FinalStateArray, cpt, finaleStateArraySize)==0 ){
                     if(finaleStateArrayContain<finaleStateArraySize){
                          FinalStateArray[finaleStateArrayContain++]=cpt;
                     }else{
@@ -41,36 +38,38 @@ int * changeFinalState(Automaton * automate, State ** FinaleArray, int numberOfS
      return FinalStateArray;
 }
 
-
-
+//FONCTION: creer la nouvelle matrice après automatisation
 binary_vector ** changeMatrix(Automaton* automate, State ** FinaleArray, int numberOfState){
 
-     //Fist free the previous matrix 
+     //on libère la matrice de l'automaton précédent
+     int state_null = -8;
      int cpt, cpt2;
      for(cpt=0;cpt<automate->matrix_size; cpt++) {free(automate->matrix[cpt]);}
-     free(automate->matrix);
-    //Create a new one
+     free(automate->matrix);  
+     //on creer la nouvelle matrice
      binary_vector **FinalMatrix = (binary_vector **) malloc(sizeof(binary_vector *)*numberOfState);          
      for(cpt=0;cpt<numberOfState; cpt++) FinalMatrix[cpt] = (binary_vector *) malloc(numberOfState*sizeof(binary_vector));
-
      for(cpt=0; cpt<numberOfState; cpt++){
           for(cpt2=0; cpt2<numberOfState; cpt2++){
                FinalMatrix[cpt][cpt2] = 0;
           }
      }
-
      for(cpt=0; cpt<numberOfState; cpt++){
           for(cpt2=0; cpt2<automate->size_alphabet; cpt2++){
+               if(FinaleArray[cpt][cpt2+1]->array_state[0]==-1){
+                    if(state_null==-8) state_null=cpt;
+                    FinalMatrix[cpt][state_null] += pow2(cpt2);
+               }else{
                FinalMatrix[cpt][FinaleArray[cpt][cpt2+1]->array_state[0]] += pow2(cpt2);
+
+               }
           }
      }    
      return FinalMatrix;
-
 }
 
-
+//FONCTION: verifie si deux tableau ont les meme valeurs a l'interieur peut importe l'ordre
 int arrayContainSameValue(string_state array1, string_state array2, int sizeArray1, int sizeArray2){
-
      if(sizeArray1!=sizeArray2) return 0;
      int i, j;
      for(i=0; i<sizeArray1; i++){
@@ -82,6 +81,7 @@ int arrayContainSameValue(string_state array1, string_state array2, int sizeArra
      return 1;
 }
 
+//FONCTION: réalise l'affichage d'un tableau de string_state
 void printArray2(string_state ar, int nu){
      int j = 0;
      for(j=0;j<nu;j++){
@@ -89,31 +89,39 @@ void printArray2(string_state ar, int nu){
      }
 }
 
-int checkColumnEquals(binary_vector **matrix, int size){
-     int i, j,d;
+//FONCTION: on verifie que deux colonne d'une matrice sont égales
+int checkColumnEquals(binary_vector **matrix, int size, Automaton * automate){
+     int i, j,d,k;
      for(d=0; d<size; d++){
           for(i=0; i<size; i++){
                for(j=(i+1); j<size; j++){
-                    if(matrix[d][i]==matrix[d][j]&&matrix[d][i]!=0) return 1;
+                    if(matrix[d][i]==matrix[d][j] && (matrix[d][i]!=0)) return 1;
+                         for(k=0; k<automate->size_alphabet; k++){
+                              int filter = pow2(k);
+                              if((matrix[d][i]&filter)==filter){
+                                   if((matrix[d][j]&filter)==filter) return 1;
+                              }
+                    }
                }
           }
      }
      return 0;
 }
 
-
+//FONCTION: détermine si l'automate doit etre déterminiser
 int shouldDeterminizate(Automaton * automate){
      if(automate->size_of_initial_state>1){
-          printf("L'automate doit etre determiniser car plsr entre \n");
+          printf("L'automate doit être determinisé car il y a plusieurs etat d'entre \n");
           return 1;
      }
-     if(checkColumnEquals(automate->matrix, automate->matrix_size)==1){
-          printf("L'automate doit etre determiniser plusieurs collone sont egales \n");
+     if(checkColumnEquals(automate->matrix, automate->matrix_size, automate)==1){
+          printf("L'automate doit être determinisé car plusieurs colonnes sont egales ou plusieurs chemins sont disponibles pour une même lettre \n");
           return 1;
      }
      return 0;
 
 }
+//FONCTION: réalise l'affichage d'un double tableau de State
 void printArrayState(State **initialArray, int sizeRow, int sizeCol){
      int i, j, k;
      for(i = 0; i<sizeRow; i++){
@@ -121,8 +129,8 @@ void printArrayState(State **initialArray, int sizeRow, int sizeCol){
                if(initialArray[i][j]==NULL){
                     printf("NULL");
                }else{
-                  for(k=0; k<initialArray[i][j]->size_array_state; k++){
-                    printf("%d", initialArray[i][j]->array_state[k]);
+                    for(k=0; k<initialArray[i][j]->size_array_state; k++){
+                         printf("%d", initialArray[i][j]->array_state[k]);
                     }  
                }
                printf(";");
@@ -130,34 +138,57 @@ void printArrayState(State **initialArray, int sizeRow, int sizeCol){
           printf("\n");
      }
 }
-int alreadySave(AlreadyChanged * array, int size, int col, int row){
-     int cpt;
-     for(cpt=0; cpt<size; cpt++){
-                         printf("Save[%d]: row:%d, col:%d \n", cpt, array[cpt]->row, array[cpt]->col);
 
-          if(array[cpt]->col==col && array[cpt]->row==row){
-               return 1;
-               printf("Save[%d]: row:%d, col:%d \n", cpt, array[cpt]->row, array[cpt]->col);
-          }
-     }
-     return 0;
-}
-void printInitialArray(State **initialArray, int sizeRow, int sizeCol){
-     int i,j,k;
-     for(i=0; i<sizeRow;i++){
-          for(j=0; j<sizeCol;j++){
-               for(k=0;k<initialArray[i][j]->size_array_state;k++)printf("%d",initialArray[i][j]->array_state[k]);
-               printf(";");
-          }
-          printf("\n");
-     }
-}
-
+//FONCTION: réalise le renomage des états afin d'avoir un automate plus lisible 
 void renameState(State **initialArray, int sizeRow, int sizeCol){
      int i, j, k;
+     int sizeMax = sizeRow+1;
+     //Pre renommage d'etat on effectue le parcours une premiere fois pour eliminer touts les chiffres seules pour eviter la confusion lors du renommage
+     for(i = 0; i<sizeRow; i++){
+          if(initialArray[i][0]->size_array_state==1 && initialArray[i][0]->array_state[0]!=-1){
+               State actualState = (State) malloc(sizeof(StrucState));
+               int prov2 = initialArray[i][0]->size_array_state;
+               actualState->size_array_state = prov2;
+               actualState->array_state = (int *) malloc(sizeof(int)*actualState->size_array_state);
+               int cpt;
+               for(cpt =0 ; cpt<actualState->size_array_state; cpt++){
+                    int prov = initialArray[i][0]->array_state[cpt];
+                    actualState->array_state[cpt]=prov;
+               }
+               free(initialArray[i][0]->array_state);
+               free(initialArray[i][0]);
+               State aState =(State) malloc(sizeof(StrucState));
+               string_state array = (int *) malloc(sizeof(int));
+               array[0]=sizeMax;
+               int size = 1;
+               aState->array_state = array;
+               aState->size_array_state=size;
+               initialArray[i][0]=aState;
+               for(j = 0; j<sizeRow; j++){
+                    for(k=0; k<sizeCol; k++){
+                         if(arrayContainSameValue(actualState->array_state, initialArray[j][k]->array_state, actualState->size_array_state, initialArray[j][k]->size_array_state)==1){
+                              free(initialArray[j][k]->array_state); 
+                              free(initialArray[j][k]);
+                              State aState =(State) malloc(sizeof(StrucState));
+                              string_state array = (int *) malloc(sizeof(int));
+                              array[0]=sizeMax;
+                              int size = 1;
+                              aState->array_state = array;
+                              aState->size_array_state=size;
+                              initialArray[j][k] = aState;  
+                         }
+                    }
+
+               }
+               sizeMax++;
+          }
+     }
+
+     //Apres renommage basique
      for(i = 0; i<sizeRow; i++){
           State actualState = (State) malloc(sizeof(StrucState));
-          actualState->size_array_state = initialArray[i][0]->size_array_state;
+          int prov2 = initialArray[i][0]->size_array_state;
+          actualState->size_array_state = prov2;
           actualState->array_state = (int *) malloc(sizeof(int)*actualState->size_array_state);
           int cpt;
           for(cpt =0 ; cpt<actualState->size_array_state; cpt++){
@@ -166,7 +197,7 @@ void renameState(State **initialArray, int sizeRow, int sizeCol){
           }
           free(initialArray[i][0]->array_state);
           free(initialArray[i][0]);
-          State aState =(State) malloc(sizeof(StrucState)); //change
+          State aState =(State) malloc(sizeof(StrucState)); 
           string_state array = (int *) malloc(sizeof(int));
           array[0]=i;
           int size = 1;
@@ -176,7 +207,6 @@ void renameState(State **initialArray, int sizeRow, int sizeCol){
           for(j = 0; j<sizeRow; j++){
                for(k=0; k<sizeCol; k++){
                     if(arrayContainSameValue(actualState->array_state, initialArray[j][k]->array_state, actualState->size_array_state, initialArray[j][k]->size_array_state)==1){
-                         if((initialArray[j][k]->size_array_state==1 && initialArray[j][k]->array_state[0]>=i)||initialArray[j][k]->size_array_state>1){
                          free(initialArray[j][k]->array_state); 
                          free(initialArray[j][k]);
                          State aState =(State) malloc(sizeof(StrucState));
@@ -186,14 +216,14 @@ void renameState(State **initialArray, int sizeRow, int sizeCol){
                          aState->array_state = array;
                          aState->size_array_state=size;
                          initialArray[j][k] = aState;  
-                    }}
+                    }
                }
-
           }
           
      }
 }
 
+//FONCTION: creer le tableau inital utile a l'automatisation
 State ** createInitialArray(Automaton * automate){
 
      State **InitialArray = (State **) malloc(automate->matrix_size*sizeof(State *));
@@ -241,20 +271,13 @@ State ** createInitialArray(Automaton * automate){
                                    aState->size_array_state=size;
                                    InitialArray[i][k+1]= aState;
                               }else{
-                                   //TODO
-                                   //verifcation alloc going good
                                    InitialArray[i][k+1] = realloc(InitialArray[i][k+1], sizeof(int)+((InitialArray[i][k+1]->size_array_state)+1)*(sizeof(int)));
                                    InitialArray[i][k+1]->array_state = realloc(InitialArray[i][k+1]->array_state, ((InitialArray[i][k+1]->size_array_state)+1)*(sizeof(int)));
                                    InitialArray[i][k+1]->size_array_state++;
                                    InitialArray[i][k+1]->array_state[InitialArray[i][k+1]->size_array_state-1]=j;
                               }
                          }
-                    }
-                    //si code&filtre=filtre
-                    //alors en position idx de column +1 de parcours de matrice
-                    //si a cette emplacement il n'y a rien alors on malloc
-                    //sinon onrealloc de une taille suplementaire
-                    
+                    }               
                }
           }
      }
@@ -262,13 +285,14 @@ State ** createInitialArray(Automaton * automate){
      return InitialArray;
 }
 
+//FONCTION: realise la création d'un string state a partie d'un tableau de valeur
 string_state copyArrayInteger(int *intialState, int sizeArray){
      string_state aState = (int *) malloc(sizeof(int)*sizeArray);
      int cpt;
      for(cpt=0; cpt<sizeArray; cpt++) aState[cpt]=intialState[cpt];
      return aState;
 }
-
+//FONCTION: creer le tableau final a une seule ligne avant le début de l'algorithm
 State ** createFinalArray(Automaton * automate){
 
      State **FinalArray = (State **) malloc(1*sizeof(State *));
@@ -297,12 +321,11 @@ State ** createFinalArray(Automaton * automate){
      return FinalArray;
 }
 
+//FONCTION: réalise la determinisation de l'automate a partir des fonctions précedentes
 void algorithmDeterminization(Automaton * automate){
-     //Cette variable ne doit pas evoluer il s'agit de la taille initiale du tableau
      int sizeOfInitialArrayCol=automate->size_alphabet+1;
      int sizeOfInitialArrayRow=automate->matrix_size;
      State **InitialArray = createInitialArray(automate);
-
      int sizeOfFinalArray =1;
      State **FinalArray = createFinalArray(automate);
      int cpt = 0;
@@ -312,6 +335,7 @@ void algorithmDeterminization(Automaton * automate){
                if(FinalArray[cpt][k]==NULL){
                     //on doit creer un state+1s
                     string_state array = (int *) malloc(sizeof(int));
+                    array[0]=-2;
                     int sizeArray = 1;
                     int numberInArray=0;
                     n=0;
@@ -322,7 +346,7 @@ void algorithmDeterminization(Automaton * automate){
                          }
                          if(InitialArray[FinalArray[cpt][0]->array_state[l]][k]!=NULL){
                          for(m=0;m<InitialArray[FinalArray[cpt][0]->array_state[l]][k]->size_array_state; m++){
-                         if(array==NULL || alreadyHaveValue(array, InitialArray[FinalArray[cpt][0]->array_state[l]][k]->array_state[m], sizeArray)==0){
+                         if(alreadyHaveValue(array, InitialArray[FinalArray[cpt][0]->array_state[l]][k]->array_state[m], sizeArray)==0){
                               n++;
                               if(numberInArray<sizeArray){
                                    array[numberInArray++]=InitialArray[FinalArray[cpt][0]->array_state[l]][k]->array_state[m];
@@ -336,6 +360,7 @@ void algorithmDeterminization(Automaton * automate){
                          
                          }
                          if(n==0){
+
                               array[0]=-1;
                          }
                     }
@@ -363,15 +388,7 @@ void algorithmDeterminization(Automaton * automate){
       ++cpt;
 
      }
-     //Tant que size du prochain arret est infereur au compteur
-     //Ou Tant que la derniere ligne contient un array pas encore vue
-
-     //On commence par regrouper les etats d'entres : automaton state init = premiere colonne de la premiere ligne 
-     //pour chaque colonne de l'alphabet on regarde sur l'initial array si differrent de nul
-     //si different de null on realloc avec une taille de plus un 
-     //si le state creer n'est pas un array contain
-     //alors on ajoute ue ligne au tableau avec pour premiere colonne ce state avec realloc
-     //on fait evoluer la taille de ce tableau de plus 1      
+     printf("Traitement determnisation terminer... réécriture de l'automate \n");
      int * finalStateSize = (int *) malloc(sizeof(int));
      int * changingFinalState = changeFinalState(automate, FinalArray, sizeOfFinalArray, finalStateSize);
      int uncpt ;
@@ -390,31 +407,36 @@ void algorithmDeterminization(Automaton * automate){
      for(uncpt=0; uncpt<automate->matrix_size; uncpt++){
           free(automate->matrix[uncpt]);
      }
+
      free(automate->matrix);
+
      automate->matrix_size=sizeOfFinalArray;
      automate->matrix = (binary_vector **) malloc(automate->matrix_size*sizeof(binary_vector *));
      for(uncpt=0; uncpt<automate->matrix_size; uncpt++){
           automate->matrix[uncpt] = (binary_vector *) malloc(sizeof(binary_vector)*automate->matrix_size);
      }
+
      copyArray(automate->matrix_size, automate->matrix_size, automate->matrix, changeMatrix(automate, FinalArray, sizeOfFinalArray));
 
      //on liberre de la memoire
      free(finalStateSize);
      free(changingFinalState);
-
      for(uncpt=0; uncpt<sizeOfInitialArrayRow; uncpt++){
           int uncpt2 ;
           for(uncpt2=0; uncpt2<sizeOfInitialArrayCol; uncpt2++){
-               //free(InitialArray[uncpt][uncpt2]->array_state);
+              // free(InitialArray[uncpt][uncpt2]->array_state);
           }
           free(InitialArray[uncpt]);
      }
      free(InitialArray);
-
+     for(uncpt=0; uncpt<sizeOfFinalArray; uncpt++){
+          free(FinalArray[uncpt]);
+     }
+     free(FinalArray);
      printf("\n\n          Votre automate a ete determiniser:              \n\n");
      print_automaton(automate);
 
-     
+
 }
 
 
