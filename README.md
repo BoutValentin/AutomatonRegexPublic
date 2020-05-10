@@ -118,7 +118,9 @@ L'alphabet dans le fichier passer en paramètre doit avoir une taille maximale d
 
 L'automate a une taille maximale definie en fonction d'une constante de lecture et de votre taille de l'alphabet. Pour information, dans le cas ou l'alphabet est de taille maximale soit 32 caractère et que toutes les cases de la matrices sont remplis, la taille de la matrice ne peut execeder 31 par 31 soit 31 états pour l'automate.
 >D'une maniere generale le nombre maximum d'état est de 1000/< Taille_Alphabet > dans le cas ou tout les états doivent être remplis.
-    
+
+### Traitement du mot vide :
+Si vous voulez tester les automates avec un mot vide passé à l'éxécutable le mot "" (*deux fois double guillemets*) et il sera ainsi traité en tant que mot vide.
 ## A propos :
 Projet réalisé dans le cadre de la matiere initiation au language C par **BOUT Valentin**.
 Le code sera rendu public sur GitHub le 15 mai 2020 à l'adresse : ```https://github.com/BoutValentin/AutomatonRegex```
