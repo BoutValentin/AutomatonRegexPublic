@@ -9,14 +9,14 @@
   - Un **alphabet** étant un ensemble de symboles permettant de former les mots. 
         - **Exemple**: {a,b,c} ou {0,1}.
         
-  - Un **ensemble d'états** notés de q0 à qn  ou n est le nombre d'états.
+  - Un **ensemble d'états** notés de q0 à qn ou n est le nombre d'états.
   
   - **Un** ou **plusieurs états initiaux** appartenant a l'ensemble d'état précèdent. 
         - **Note** : si l'automate a plusieurs états initiaux ont dit alors qu'il est non déterministe.
         
   - **Un ensemble d'états acceptant** ou **états de sorties** appartenant a l'ensemble d'état.
   
-  - **Une fonction de transition** qui a pour objectif de définir les relations entre les noeuds du graphes et dont chaque arc est étiqueté par des symboles. Cette fonction peut aussi etre représenter par une matrice d'adjacence dont les élèments sont des sous ensembles de l'alphabet.
+  - **Une fonction de transition** qui a pour objectif de définir les relations entre les noeuds du graphes et dont chaque arc est étiqueté par des symboles. Cette fonction peut aussi etre représentée par une matrice d'adjacence dont les élèments sont des sous ensembles de l'alphabet.
         - **Note** : si plusieurs colonnes de la matrice adjancentes sur la même ligne sont égales alors l'automate est non déterministe.
 
 ## Format du fichier de description d'automate
@@ -74,7 +74,7 @@ La ligne de commande s'éxécute de diffèrente maniere:
     ```sh
     $ ./bin/automate -w <mot_a_tester> -f <lien_du_fichier>
     ```
-    > Ces deux options sont indépendantes l'une de l'autre et peuvent être utiliser sans ordre précis. Dans le cas ou l'une est préciser le troisième paramètres sans options sera pris pour l'autre par defaut. Ainsi si seul -f est passer alors le parametres avant -f ou apres le nom du fichier sera pris comme le mot a tester.
+    > Ces deux options sont indépendantes l'une de l'autre et peuvent être utilisées sans ordre précis. Dans le cas ou l'une est précisée le troisième paramètres sans options sera pris pour l'autre par defaut. Ainsi si seul -f est passée alors le parametres avant -f ou apres le nom du fichier sera pris comme le mot a tester.
     > **Exemple:** <br/>
     >```$ ./bin/automate -f ./TestFile/automate1 baba ```<br/>
     >```$ ./bin/automate baba -f ./TestFile/automate1 ```<br/>
@@ -84,11 +84,11 @@ La ligne de commande s'éxécute de diffèrente maniere:
     >```$ ./bin/automate -f ./TestFile/automate1 -w baba```<br/>
     
  - Pour réecrire votre fichier avec -overwrite:<br/>
-    L'option **-overwrite** permet dans le cas ou vous passez un fichier d'un automate non déterministe de réécrire votre fichier avec l'automate déterministe créer par le programme.
+    L'option **-overwrite** permet dans le cas ou vous passez un fichier d'un automate non déterministe de réécrire votre fichier avec l'automate déterministe créé par le programme.
     ```sh
     $ ./bin/automate <mot_a_tester> <lien_du_fichier> -overwrite
     ```
-    >Cette option est indépendante des autres et peut etre utiliser avec -w et -f de la meme maniere que précèdement en ajoutant -overwrite n'importe ou dans la ligne de commande<br/>
+    >Cette option est indépendante des autres et peut etre utilisée avec -w et -f de la meme maniere que précèdement en ajoutant -overwrite n'importe ou dans la ligne de commande<br/>
     >**Exemple:**<br/>
     >```$ ./bin/automate -f ./TestFile/automate1 -overwrite baba ``` Ici baba sera pris comme mot a utiliser<br/>
     >```$ ./bin/automate -overwrite -w baba ./TestFile/automate1 ``` Ici automate1 sera pris comme le fichier par defaut<br/>
@@ -103,16 +103,16 @@ La ligne de commande s'éxécute de diffèrente maniere:
     ```sh
     $ ./bin/automate -help
     ```
-   > De maniere générale l'utilisation de -help avec d'autre argument affiche l'aide et annule l'excution du programme 
+   > De maniere générale l'utilisation de -help avec d'autre argument affiche l'aide et annule l'éxcution du programme. 
 
 ## Informations complémentaires:
 
 ### Traitement des automates non déterministes:
 
-Dans le cas ou vous passez un fichier décrivant un automate non déterministe (voir condition dans la section *Rappel: Automate et languages*), le programme transformera votre algorithme en automate détermniste afin de faciliter le traitement. Notez que par défaut, seul l'automate du programme est modifier et non le fichier passer en paramètre. Pour modifier aussi voter fichier passer a l'éxecutable l'option **-overwrite**.
+Dans le cas ou vous passez un fichier décrivant un automate non déterministe (voir condition dans la section *Rappel: Automate et languages*), le programme transformera votre algorithme en automate déterministe afin de faciliter le traitement. Notez que par défaut, seul l'automate du programme est modifié et non le fichier passé en paramètre. Pour modifier aussi votre fichier passer a l'éxecutable l'option **-overwrite**.
 
 ### Taille de l'alphabet:
-L'alphabet dans le fichier passer en paramètre doit avoir une taille maximale de 32 charactères. Dans le cas contraire le programme vous demendera de modifier votre alphabet dans votre fichier.
+L'alphabet dans le fichier passer en paramètre doit avoir une taille maximale de 32 charactères. Dans le cas contraire le programme vous demandera de modifier votre alphabet dans votre fichier.
 
 ### Taile de l'automate (Nombre d'état):
 
@@ -120,5 +120,5 @@ L'automate a une taille maximale definie en fonction d'une constante de lecture 
 >D'une maniere generale le nombre maximum d'état est de 1000/< Taille_Alphabet > dans le cas ou tout les états doivent être remplis.
     
 ## A propos :
-Projet réaliser dans le cadre de la matiere initiation au language C par **BOUT Valentin**.
+Projet réalisé dans le cadre de la matiere initiation au language C par **BOUT Valentin**.
 Le code sera rendu public sur GitHub le 15 mai 2020 à l'adresse : ```https://github.com/BoutValentin/AutomatonRegex```

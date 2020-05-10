@@ -209,10 +209,10 @@ void renameState(State **initialArray, int sizeRow, int sizeCol){
                int prov = initialArray[i][0]->array_state[cpt];
                actualState->array_state[cpt]=prov;
           }
-           if(initialArray[i][0]!=NULL){
+          if(initialArray[i][0]!=NULL){
                     free(initialArray[i][0]->array_state);
                     free(initialArray[i][0]);
-               }
+          }
           State aState =(State) malloc(sizeof(StrucState)); 
           string_state array = (int *) malloc(sizeof(int));
           array[0]=i;
@@ -246,7 +246,7 @@ void renameState(State **initialArray, int sizeRow, int sizeCol){
                }
           }
           printf("space \n\n");
-                         printArrayState(initialArray, sizeRow,sizeCol);
+          printArrayState(initialArray, sizeRow,sizeCol);
           free(actualState->array_state);
           free(actualState);
           
