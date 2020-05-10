@@ -167,18 +167,13 @@ void renameState(State **initialArray, int sizeRow, int sizeCol){
                aState->array_state = array;
                aState->size_array_state=1;
                initialArray[i][0]=aState;
-               printf("erreur deja produite ?\n");
                for(j = 0; j<sizeRow; j++){
                     for(k=0; k<sizeCol; k++){
                          if(arrayContainSameValue(actualState->array_state, initialArray[j][k]->array_state, actualState->size_array_state, initialArray[j][k]->size_array_state)==1 ){
-                         printf("une error a i: %d, j:%d, k:%d \n",i,j,k);
                               if(initialArray[j][k]!=NULL){
                                    free(initialArray[j][k]->array_state); 
-                              free(initialArray[j][k]);
+                                   free(initialArray[j][k]);
                               }
-                              
-                                             printf("sorti des free \n");
-
                               State aState2 =(State) malloc(sizeof(StrucState));
                               string_state array2 = (int *) malloc(sizeof(int));
                               array2[0]=sizeMax;
@@ -190,8 +185,6 @@ void renameState(State **initialArray, int sizeRow, int sizeCol){
                     }
 
                }
-               printf("space \n\n");
-               printArrayState(initialArray, sizeRow,sizeCol);
                free(actualState->array_state);
                free(actualState);
                sizeMax++;
@@ -223,17 +216,12 @@ void renameState(State **initialArray, int sizeRow, int sizeCol){
 
           for(j = 0; j<sizeRow; j++){
                for(k=0; k<sizeCol; k++){
-                     printf("erreur deja produite ?\n");
-                     printf("INITIAL SZE blabal: %ld \n",sizeof(initialArray[j][k]->size_array_state));
-                    printArray2(initialArray[j][k]->array_state, initialArray[j][k]->size_array_state);
                     if(arrayContainSameValue(actualState->array_state, initialArray[j][k]->array_state, actualState->size_array_state, initialArray[j][k]->size_array_state)==1){
-                         printf("une error a i: %d, j:%d, k:%d \n",i,j,k);
 
                          if(initialArray[j][k]!=NULL){
                                    free(initialArray[j][k]->array_state); 
                                    free(initialArray[j][k]);
                          }
-                         printf("sorti des free \n");
 
                          State aState2 =(State) malloc(sizeof(StrucState));
                          string_state array2 = (int *) malloc(sizeof(int));
@@ -245,8 +233,6 @@ void renameState(State **initialArray, int sizeRow, int sizeCol){
                     }
                }
           }
-          printf("space \n\n");
-          printArrayState(initialArray, sizeRow,sizeCol);
           free(actualState->array_state);
           free(actualState);
           
