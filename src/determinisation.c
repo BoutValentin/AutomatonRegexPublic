@@ -44,8 +44,8 @@ binary_vector ** changeMatrix(Automaton* automate, State ** FinaleArray, int num
      //on libère la matrice de l'automaton précédent
      int state_null = -8;
      int cpt, cpt2;
-     for(cpt=0;cpt<automate->matrix_size; cpt++) {free(automate->matrix[cpt]);}
-     free(automate->matrix);  
+     //for(cpt=0;cpt<automate->matrix_size; cpt++) {free(automate->matrix[cpt]);}
+     //free(automate->matrix);  
      //on creer la nouvelle matrice
      binary_vector **FinalMatrix = (binary_vector **) malloc(sizeof(binary_vector *)*numberOfState);          
      for(cpt=0;cpt<numberOfState; cpt++) FinalMatrix[cpt] = (binary_vector *) malloc(numberOfState*sizeof(binary_vector));
@@ -145,7 +145,7 @@ void renameState(State **initialArray, int sizeRow, int sizeCol){
      int sizeMax = sizeRow+1;
      //Pre renommage d'etat on effectue le parcours une premiere fois pour eliminer touts les chiffres seules pour eviter la confusion lors du renommage
      for(i = 0; i<sizeRow; i++){
-          if(initialArray[i][0]->size_array_state==1 && initialArray[i][0]->array_state[0]!=-1){
+          if((initialArray[i][0]->size_array_state==1) && (initialArray[i][0]->array_state[0]!=-1)){
                State actualState = (State) malloc(sizeof(StrucState));
                int prov2 = initialArray[i][0]->size_array_state;
                actualState->size_array_state = prov2;
@@ -155,31 +155,45 @@ void renameState(State **initialArray, int sizeRow, int sizeCol){
                     int prov = initialArray[i][0]->array_state[cpt];
                     actualState->array_state[cpt]=prov;
                }
-               free(initialArray[i][0]->array_state);
-               free(initialArray[i][0]);
+               if(initialArray[i][0]!=NULL){
+                    free(initialArray[i][0]->array_state);
+                    free(initialArray[i][0]);
+               }
+               
                State aState =(State) malloc(sizeof(StrucState));
                string_state array = (int *) malloc(sizeof(int));
                array[0]=sizeMax;
                int size = 1;
                aState->array_state = array;
-               aState->size_array_state=size;
+               aState->size_array_state=1;
                initialArray[i][0]=aState;
+               printf("erreur deja produite ?\n");
                for(j = 0; j<sizeRow; j++){
                     for(k=0; k<sizeCol; k++){
-                         if(arrayContainSameValue(actualState->array_state, initialArray[j][k]->array_state, actualState->size_array_state, initialArray[j][k]->size_array_state)==1){
-                              free(initialArray[j][k]->array_state); 
+                         if(arrayContainSameValue(actualState->array_state, initialArray[j][k]->array_state, actualState->size_array_state, initialArray[j][k]->size_array_state)==1 ){
+                         printf("une error a i: %d, j:%d, k:%d \n",i,j,k);
+                              if(initialArray[j][k]!=NULL){
+                                   free(initialArray[j][k]->array_state); 
                               free(initialArray[j][k]);
-                              State aState =(State) malloc(sizeof(StrucState));
-                              string_state array = (int *) malloc(sizeof(int));
-                              array[0]=sizeMax;
+                              }
+                              
+                                             printf("sorti des free \n");
+
+                              State aState2 =(State) malloc(sizeof(StrucState));
+                              string_state array2 = (int *) malloc(sizeof(int));
+                              array2[0]=sizeMax;
                               int size = 1;
-                              aState->array_state = array;
-                              aState->size_array_state=size;
-                              initialArray[j][k] = aState;  
+                              aState2->array_state = array2;
+                              aState2->size_array_state=1;
+                              initialArray[j][k] = aState2;  
                          }
                     }
 
                }
+               printf("space \n\n");
+               printArrayState(initialArray, sizeRow,sizeCol);
+               free(actualState->array_state);
+               free(actualState);
                sizeMax++;
           }
      }
@@ -195,30 +209,46 @@ void renameState(State **initialArray, int sizeRow, int sizeCol){
                int prov = initialArray[i][0]->array_state[cpt];
                actualState->array_state[cpt]=prov;
           }
-          free(initialArray[i][0]->array_state);
-          free(initialArray[i][0]);
+           if(initialArray[i][0]!=NULL){
+                    free(initialArray[i][0]->array_state);
+                    free(initialArray[i][0]);
+               }
           State aState =(State) malloc(sizeof(StrucState)); 
           string_state array = (int *) malloc(sizeof(int));
           array[0]=i;
           int size = 1;
           aState->array_state = array;
-          aState->size_array_state=size;
+          aState->size_array_state=1;
           initialArray[i][0]=aState;
+
           for(j = 0; j<sizeRow; j++){
                for(k=0; k<sizeCol; k++){
+                     printf("erreur deja produite ?\n");
+                     printf("INITIAL SZE blabal: %ld \n",sizeof(initialArray[j][k]->size_array_state));
+                    printArray2(initialArray[j][k]->array_state, initialArray[j][k]->size_array_state);
                     if(arrayContainSameValue(actualState->array_state, initialArray[j][k]->array_state, actualState->size_array_state, initialArray[j][k]->size_array_state)==1){
-                         free(initialArray[j][k]->array_state); 
-                         free(initialArray[j][k]);
-                         State aState =(State) malloc(sizeof(StrucState));
-                         string_state array = (int *) malloc(sizeof(int));
-                         array[0]=i;
+                         printf("une error a i: %d, j:%d, k:%d \n",i,j,k);
+
+                         if(initialArray[j][k]!=NULL){
+                                   free(initialArray[j][k]->array_state); 
+                                   free(initialArray[j][k]);
+                         }
+                         printf("sorti des free \n");
+
+                         State aState2 =(State) malloc(sizeof(StrucState));
+                         string_state array2 = (int *) malloc(sizeof(int));
+                         array2[0]=i;
                          int size = 1;
-                         aState->array_state = array;
-                         aState->size_array_state=size;
-                         initialArray[j][k] = aState;  
+                         aState2->array_state = array2;
+                         aState2->size_array_state=1;
+                         initialArray[j][k] = aState2;  
                     }
                }
           }
+          printf("space \n\n");
+                         printArrayState(initialArray, sizeRow,sizeCol);
+          free(actualState->array_state);
+          free(actualState);
           
      }
 }
@@ -392,6 +422,7 @@ void algorithmDeterminization(Automaton * automate){
      int * finalStateSize = (int *) malloc(sizeof(int));
      int * changingFinalState = changeFinalState(automate, FinalArray, sizeOfFinalArray, finalStateSize);
      int uncpt ;
+
      renameState(FinalArray, sizeOfFinalArray, automate->size_alphabet+1);
 
      automate->size_of_initial_state=1;
@@ -415,23 +446,38 @@ void algorithmDeterminization(Automaton * automate){
      for(uncpt=0; uncpt<automate->matrix_size; uncpt++){
           automate->matrix[uncpt] = (binary_vector *) malloc(sizeof(binary_vector)*automate->matrix_size);
      }
+     binary_vector ** matrixProv = changeMatrix(automate, FinalArray, sizeOfFinalArray);
+     copyArray(automate->matrix_size, automate->matrix_size, automate->matrix, matrixProv);
+     for(uncpt=0; uncpt<automate->matrix_size; uncpt++){
+          free(matrixProv[uncpt]);
+     }
 
-     copyArray(automate->matrix_size, automate->matrix_size, automate->matrix, changeMatrix(automate, FinalArray, sizeOfFinalArray));
-
+     free(matrixProv);
      //on liberre de la memoire
      free(finalStateSize);
      free(changingFinalState);
+     printArrayState(InitialArray, sizeOfInitialArrayRow, sizeOfInitialArrayCol);
      for(uncpt=0; uncpt<sizeOfInitialArrayRow; uncpt++){
           int uncpt2 ;
           for(uncpt2=0; uncpt2<sizeOfInitialArrayCol; uncpt2++){
-              // free(InitialArray[uncpt][uncpt2]->array_state);
+               //printf("uncpt: %d, uncpt2: %d \n", uncpt, uncpt2);
+               //printArray2(InitialArray[uncpt][uncpt2]->array_state, InitialArray[uncpt][uncpt2]->size_array_state);
+               if(InitialArray[uncpt][uncpt2] != NULL)free(InitialArray[uncpt][uncpt2]->array_state);
+              free(InitialArray[uncpt][uncpt2]);
           }
           free(InitialArray[uncpt]);
      }
      free(InitialArray);
      for(uncpt=0; uncpt<sizeOfFinalArray; uncpt++){
+          int uncpt2 ;
+          for(uncpt2=0; uncpt2<automate->size_alphabet+1; uncpt2++){
+               if(FinalArray[uncpt][uncpt2]!=NULL) free(FinalArray[uncpt][uncpt2]->array_state);
+              free(FinalArray[uncpt][uncpt2]);
+          }
           free(FinalArray[uncpt]);
      }
+                   ;
+
      free(FinalArray);
      printf("\n\n          Votre automate a ete determiniser:              \n\n");
      print_automaton(automate);

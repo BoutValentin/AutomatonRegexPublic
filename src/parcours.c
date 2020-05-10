@@ -29,6 +29,9 @@ int parcours(Automaton * automaton, char *mot){
      while( idx_lecture<length){
           int position_actual_letter = getPosition(mot[idx_lecture], automaton->alphabet_array, automaton->size_alphabet);
           if(position_actual_letter==-1){
+               if(idx_lecture==0 && mot[idx_lecture]=='"'&& length==2 && mot[idx_lecture+1]=='"'){
+                    idx_lecture+=2;break;
+               }
                printf("Mot non reconnu \n");
                return -1;
           }

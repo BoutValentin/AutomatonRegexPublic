@@ -14,13 +14,15 @@ void printArray(int ar[], int l){
 }
 //FUNCTION: renvoie la puissance de 2 d'une position 
 int pow2(int position){
-     int idx = 0;
-     int res = 1;
-     while(idx<position){
-          res *= 2;
-          idx++;
-     }
-     return res;
+     //int idx = 0;
+     //int res = 1;
+     //res = res<<position;
+     //while(idx<position){
+     //     res *= 2;
+     //     idx++;
+     //}
+     //return res;
+     return 1<<position;
 }
 //FUNCTION: retourne la position d'une lettre dans un simple tableau de charactère ou -1 si la lettre ne fait pas partie du mot
 int getPosition(char letter, char array_letter[], int arrayLength){

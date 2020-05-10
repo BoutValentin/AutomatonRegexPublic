@@ -32,6 +32,6 @@ int main(int argc, char **argv){
     //On réalise alors le parcours de l'automate avec le mot passer en parametre
     parcours(automate, argv[2]);
     //On libere l'automate et les malloc effectuer
-    //freeAutomaton(automate);
+    freeAutomaton(automate);
     return 0;
 }
