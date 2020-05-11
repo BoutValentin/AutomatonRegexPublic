@@ -4,7 +4,7 @@
 #include "type.h"
 #define MAXALPAHE 32
 
-//FUNCTION: permet l'affichage d'un tableau simple
+//FONCTION: permet l'affichage d'un tableau simple
 void printArray(int ar[], int l){
      int idx =0;
      while(idx<l){
@@ -12,19 +12,11 @@ void printArray(int ar[], int l){
           idx++;
      }
 }
-//FUNCTION: renvoie la puissance de 2 d'une position 
+//FONCTION: renvoie la puissance de 2 d'une position 
 int pow2(int position){
-     //int idx = 0;
-     //int res = 1;
-     //res = res<<position;
-     //while(idx<position){
-     //     res *= 2;
-     //     idx++;
-     //}
-     //return res;
      return 1<<position;
 }
-//FUNCTION: retourne la position d'une lettre dans un simple tableau de charactère ou -1 si la lettre ne fait pas partie du mot
+//FONCTION: retourne la position d'une lettre dans un simple tableau de charactère ou -1 si la lettre ne fait pas partie du mot
 int getPosition(char letter, char array_letter[], int arrayLength){
      int size = arrayLength;
      int idx = 0;
@@ -33,7 +25,7 @@ int getPosition(char letter, char array_letter[], int arrayLength){
      return idx;
 }
 
-//FUNCTION: permet de copier un double tableau de binary vector vers un autre tableau de binary vector
+//FONCTION: permet de copier un double tableau de binary vector vers un autre tableau de binary vector
 void copyArray(int nb_lig, int nb_col, binary_vector **m1, binary_vector **m2){
      int idx = 0;
      int idx2 = 0;
@@ -47,7 +39,7 @@ void copyArray(int nb_lig, int nb_col, binary_vector **m1, binary_vector **m2){
           idx++;
      }
 }
-//FUNCTION: permet de  copier un simple tableau de int vers un autre tableau de int
+//FONCTION: permet de  copier un simple tableau de int vers un autre tableau de int
 void copyArrayInt(int col, int ar1[], int ar2[]){
      int idx=0;
      while(idx<col){
@@ -56,7 +48,7 @@ void copyArrayInt(int col, int ar1[], int ar2[]){
           idx++;
      }
 }
-//FUNCTION: permet de copier un simple tableau de char vers un autre tableau de char 
+//FONCTION: permet de copier un simple tableau de char vers un autre tableau de char 
 void copyArrayChar(int col, char ar1[], char ar2[]){
      int idx=0;
      while(idx<col){
@@ -65,7 +57,7 @@ void copyArrayChar(int col, char ar1[], char ar2[]){
           idx++;
      }
 }
-//FUNCTION: renvoie la taille d'une ligne d'une matrixe afin de verifier son nombre de colonne par la suite
+//FONCTION: renvoie la taille d'une ligne d'une matrixe afin de verifier son nombre de colonne par la suite
 int verificationMatrix(char tab[], int size){
      int cpt ;
      int res =0 ;
@@ -75,10 +67,11 @@ int verificationMatrix(char tab[], int size){
      return ++res;
 }
 
-//FUNCTION: CONSTRUCTEUR: permet de construire un automate de type AUTOMATON renvoyant un pointeur sur la structure
+//FONCTION: CONSTRUCTEUR: permet de construire un automate de type AUTOMATON renvoyant un pointeur sur la structure
 Automaton* constructor(char* path ){
-     
+     //Creation du tableau receuillant les lignes lut
      char tab[1000];
+     //Ouverture du fichier en read Only
      FILE *myFile = fopen(path, "r");
      if(myFile==NULL){
           printf("Error while opening the file. \n");
@@ -90,9 +83,9 @@ Automaton* constructor(char* path ){
      int *data_final_state;
      binary_vector **matrix_set;
      int size=0, size2=0, size3=0, size4=0, ligneRead=0, idx=0, idx2=0, index = 0;
+     //Lecture du fichier tant que fgets n'est pas arriver a la fin signifier par un Null
      while( fgets(tab, 1000, myFile)!=NULL){
-          switch (ligneRead)
-          {
+          switch (ligneRead){
           case 0:
                //On cherche la taille de notre alphabet 
                while(size<1000 && tab[size]!='\n' && tab[size]!='\0' &&tab[size]!=EOF) size++;
@@ -104,23 +97,30 @@ Automaton* constructor(char* path ){
                     printf("Il semble que votre fichier ne contient pas de retour a la ligne dans la limite de 1000 charactere ou la ligne est vide a la ligne 1 \n ");
                     return NULL;
                }
+               //On initialise un tableau a allocation dynamique qui evoluera en fonction de l'alphabet
                data_alphabet = (char *) malloc(sizeof(char)*size);
+               //On initialse les données de ce tableau par une valeur inutile
                memset(data_alphabet, 0, sizeof(char)*size);
                index = 0;
+               //On parcours la ligne lu dans le tableau que l'on met dans notre tableau d'alphabet
                while(index<size){
                     data_alphabet[index]=tab[index];
                     index++;
                }
                break;
           case 1:
+               //On verifie l'integrite de la ligne
                while(size4<1000 && tab[size4]!='\n' && tab[size4]!='\0' &&tab[size4]!=EOF) size4++;
                if(size4>=999 || size4==0){
                     printf("Il semble que votre fichier ne contient pas de retour a la ligne dans la limite de 1000 charactere ou la ligne est vide a la ligne 2 \n ");
                     return NULL;
                }
+               //ON initialise un tableau de la taille de ce qu'on a lu précédement
                prime_enter = (int *) malloc(sizeof(int)*size4);
+               //On initialise les données de ce tableau a une valeur inutile qui sera écrasée
                memset(prime_enter, 0, sizeof(int)*size4);
                index = 0;
+               //On parcours la ligne lut dans le tableau sauvegardant cette ligne et on ajoute a notre tableau creer les valeur entiere des caractères stockes
                while(index<size4){
                     prime_enter[index]=tab[index]-48;
                     index++;
@@ -128,14 +128,17 @@ Automaton* constructor(char* path ){
                break;
           case 2: 
                size2 = 0;
+               //On verifie l'intégrite de la ligne lu
                while(size2<1000 && tab[size2]!='\n' && tab[size2]!='\0' &&tab[size2]!=EOF) size2++;
                if(size2>=999 || size2==0){
                     printf("Il semble que votre fichier ne contient pas de retour a la ligne dans la limite de 1000 charactere ou la ligne est vide a la ligne 3 \n ");
                     return NULL;
                }
+               //On initialise un tableau a la valeur précédente
                data_final_state = (int*) malloc(sizeof(int)*size2);
                memset(data_final_state, 0, sizeof(int)*size2);
                index = 0;
+               //On parcours la ligne lut dans le tableau sauvegardant cette ligne et on ajoute a notre tableau creer les valeur entiere des caractères stockes
                while(index<size2){
                     data_final_state[index]=tab[index]-48;
                     index++;
@@ -145,6 +148,7 @@ Automaton* constructor(char* path ){
                idx=idx2=0;
                //on determine la taille de notre matrix
                if(ligneRead==3){
+                    //ON verifie l'integrite de la ligne lu
                     while(idx<1000 && (tab[idx]!='\n' && tab[idx]!='\0' &&tab[idx]!=EOF )){
                          if(tab[idx]==';') size3++;
                          idx++;
@@ -159,14 +163,14 @@ Automaton* constructor(char* path ){
                     int cpt = 0;
                     for(cpt=0;cpt<size3; cpt++) matrix_set[cpt] = (binary_vector *) malloc(size3*sizeof(binary_vector));
                }else{
+                    //Si on est pas a la ligne trois alors on a deja rencontrer une ligne de matrice il faut donc ensuite verifier que la matrice est carré
                     if(size3!=verificationMatrix(tab, 1000)){
                          printf("Une erreur est survenue dans la Matrix : Il semble que tout les lignes ne soit pas egales \n");
                          return NULL;
                     }
                }
                idx=idx2=0;
-                         
-               
+               //On parcours le tableau de notre ligne lut
                while(tab[idx]!='\n' && tab[idx]!='\0'){ 
                     int res = 0;
                     while(tab[idx]!=';' && tab[idx]!='\n' && tab[idx]!='\0'){
@@ -253,7 +257,6 @@ void freeAutomaton(Automaton* automaton){
 
 //FONCTION: réalise l'affichage d'un automate
 void print_automaton(Automaton* automa){
-     
      int index = 0;
      printf("The alphabet: {");
      while(index<automa->size_alphabet){
@@ -276,6 +279,7 @@ void print_automaton(Automaton* automa){
           if(index<automa->size_final_state-1)printf(",");
           index++;
      }
+     
      int row = 0;
      int column = 0;
      printf(" }\nMatrix : \n");

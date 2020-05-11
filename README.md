@@ -50,7 +50,7 @@ ab;;;;
   - L'utilisation du makeFile:
   
   ```sh
-  $ make -f MakeFile
+  $ make -f Makefile
   ```
   
   - Ou l'utilisation de la ligne de commande:
