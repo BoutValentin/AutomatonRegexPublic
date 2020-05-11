@@ -1,3 +1,4 @@
+**auteur:**Bout Valentin Groupe A IUT Lille
 # Programme d'Automate à expression régulière (AUTOMATON REGEX)
 \
 **Objectif:** Ce programme a pour but la simulation d'automates finis déterministes ou non déterministes a un nombre "infinie d'état" (Voir la section *Information complementaire*) et un alphabet de 32 caracteres. 

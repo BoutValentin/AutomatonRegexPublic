@@ -257,27 +257,28 @@ void print_automaton(Automaton* automa){
      int index = 0;
      printf("The alphabet: {");
      while(index<automa->size_alphabet){
-          printf("%c", automa->alphabet_array[index]);
+          printf(" %c", automa->alphabet_array[index]);
           if(index<automa->size_alphabet-1) printf(",");
           index++;
      }
      index = 0;
-     printf("}\nInitial state : ");
+     printf(" }\nInitial state : {");
 
      while(index<automa->size_of_initial_state){
-          printf("%d", automa->initial_state[index]);
+          printf(" %d", automa->initial_state[index]);
+          if(index<automa->size_of_initial_state-1)printf(",");
           index++;
      }
-     printf("\nThe acceptation state : {");
+     printf(" }\nThe acceptation state : {");
      index = 0;
      while(index<automa->size_final_state){
-          printf("%d", automa->final_state_array[index]);
+          printf(" %d", automa->final_state_array[index]);
           if(index<automa->size_final_state-1)printf(",");
           index++;
      }
      int row = 0;
      int column = 0;
-     printf("}\nMatrix : \n");
+     printf(" }\nMatrix : \n");
      while(row<automa->matrix_size){
           column = 0;
           while(column<automa->matrix_size){

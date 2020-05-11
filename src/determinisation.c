@@ -305,7 +305,10 @@ State ** createInitialArray(Automaton * automate){
 string_state copyArrayInteger(int *intialState, int sizeArray){
      string_state aState = (int *) malloc(sizeof(int)*sizeArray);
      int cpt;
-     for(cpt=0; cpt<sizeArray; cpt++) aState[cpt]=intialState[cpt];
+     for(cpt=0; cpt<sizeArray; cpt++) {
+          int prov = intialState[cpt];
+          aState[cpt]=prov;
+     }
      return aState;
 }
 //FONCTION: creer le tableau final a une seule ligne avant le début de l'algorithm
@@ -365,11 +368,13 @@ void algorithmDeterminization(Automaton * automate){
                          if(alreadyHaveValue(array, InitialArray[FinalArray[cpt][0]->array_state[l]][k]->array_state[m], sizeArray)==0){
                               n++;
                               if(numberInArray<sizeArray){
-                                   array[numberInArray++]=InitialArray[FinalArray[cpt][0]->array_state[l]][k]->array_state[m];
+                                   int prov = InitialArray[FinalArray[cpt][0]->array_state[l]][k]->array_state[m];
+                                   array[numberInArray++]= prov;
                               }else{
                                    ++sizeArray;
                                    array = (int *) realloc(array, sizeArray*sizeof(int));
-                                   array[numberInArray++]=InitialArray[FinalArray[cpt][0]->array_state[l]][k]->array_state[m];
+                                   int prov = InitialArray[FinalArray[cpt][0]->array_state[l]][k]->array_state[m];
+                                   array[numberInArray++]=prov;
                               }
                          }
                          }
@@ -393,7 +398,10 @@ void algorithmDeterminization(Automaton * automate){
                          FinalArray = realloc(FinalArray, (sizeOfFinalArray)*(sizeof(State *)));
                          FinalArray[sizeOfFinalArray-1]=(State *) malloc((automate->size_alphabet+1)*sizeof(State));
                          int i2;
-                         FinalArray[l][0]= aState;
+                         State secondaryState = (State) malloc(sizeof(StrucState));
+                         secondaryState->array_state = copyArrayInteger(aState->array_state, aState->size_array_state);
+                         secondaryState->size_array_state=aState->size_array_state;
+                         FinalArray[l][0]= secondaryState;
                          for(i2=1; i2<(automate->size_alphabet+1); i2++){
                               FinalArray[l][i2]=NULL;
                          }
@@ -404,7 +412,7 @@ void algorithmDeterminization(Automaton * automate){
       ++cpt;
 
      }
-     printf("Traitement determnisation terminer... réécriture de l'automate \n");
+     printf("Traitement determinisation terminé... réécriture de l'automate \n");
      int * finalStateSize = (int *) malloc(sizeof(int));
      int * changingFinalState = changeFinalState(automate, FinalArray, sizeOfFinalArray, finalStateSize);
      int uncpt ;
@@ -442,14 +450,13 @@ void algorithmDeterminization(Automaton * automate){
      //on liberre de la memoire
      free(finalStateSize);
      free(changingFinalState);
-     printArrayState(InitialArray, sizeOfInitialArrayRow, sizeOfInitialArrayCol);
      for(uncpt=0; uncpt<sizeOfInitialArrayRow; uncpt++){
           int uncpt2 ;
           for(uncpt2=0; uncpt2<sizeOfInitialArrayCol; uncpt2++){
-               //printf("uncpt: %d, uncpt2: %d \n", uncpt, uncpt2);
-               //printArray2(InitialArray[uncpt][uncpt2]->array_state, InitialArray[uncpt][uncpt2]->size_array_state);
-               if(InitialArray[uncpt][uncpt2] != NULL)free(InitialArray[uncpt][uncpt2]->array_state);
-              free(InitialArray[uncpt][uncpt2]);
+               if(InitialArray[uncpt][uncpt2] != NULL) {
+                    free(InitialArray[uncpt][uncpt2]->array_state);
+                    free(InitialArray[uncpt][uncpt2]);
+               }
           }
           free(InitialArray[uncpt]);
      }
@@ -457,13 +464,13 @@ void algorithmDeterminization(Automaton * automate){
      for(uncpt=0; uncpt<sizeOfFinalArray; uncpt++){
           int uncpt2 ;
           for(uncpt2=0; uncpt2<automate->size_alphabet+1; uncpt2++){
-               if(FinalArray[uncpt][uncpt2]!=NULL) free(FinalArray[uncpt][uncpt2]->array_state);
-              free(FinalArray[uncpt][uncpt2]);
+               if(FinalArray[uncpt][uncpt2]!=NULL && FinalArray[uncpt][uncpt2]->array_state!=NULL) {
+                    free(FinalArray[uncpt][uncpt2]->array_state);
+                    free(FinalArray[uncpt][uncpt2]);
+               }
           }
           free(FinalArray[uncpt]);
      }
-                   ;
-
      free(FinalArray);
      printf("\n\n          Votre automate a ete determiniser:              \n\n");
      print_automaton(automate);
